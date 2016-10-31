@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">mgstatefeedback</string>
+    <string name="start_wearable_activity">Start Wearable Activity</string>
+</resources>
