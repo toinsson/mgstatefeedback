@@ -36,19 +36,19 @@ public class MainActivity extends WearableActivity {
         setContentView(R.layout.activity_main);
         setAmbientEnabled();
 
+        mContainerView = (RelativeLayout) findViewById(R.id.container);
+        mTextView = (TextView) findViewById(R.id.sensor_1);
+        mClockView = (TextView) findViewById(R.id.clock);
+
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String s = intent.getStringExtra(DataLayerListenerService.SEND_STATE_DATA);
                 Log.d(TAG, "received broadcast from service");
-                // do something here.
-
+                mTextView.setText(s);
             }
         };
 
-        mContainerView = (RelativeLayout) findViewById(R.id.container);
-        mTextView = (TextView) findViewById(R.id.sensor_1);
-        mClockView = (TextView) findViewById(R.id.clock);
     }
 
     @Override

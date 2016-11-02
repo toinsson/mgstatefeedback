@@ -73,10 +73,10 @@ public class DataLayerListenerService extends WearableListenerService {
 
         // Check to see if the message is to start an activity
         if (messageEvent.getPath().equals(SEND_STATE_PATH)) {
-            sendResult("blab !!!");
+            String message = new String(messageEvent.getData());
+            sendResult(message);
         }
     }
-
 
     public void sendResult(String message) {
         Intent intent = new Intent(SEND_STATE_HEAD);

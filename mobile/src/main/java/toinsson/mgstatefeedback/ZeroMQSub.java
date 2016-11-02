@@ -13,8 +13,8 @@ class ZeroMQSub implements Runnable {
     private final int port;
     private final Handler uiThreadHandler;
 
-    ZeroMQSub(Handler uiThreadHandler) {
-        this.host = "tcp://130.209.246.38";
+    ZeroMQSub(Handler uiThreadHandler, String host) {
+        this.host = "tcp://"+host;
         this.port = 5556;
         this.uiThreadHandler = uiThreadHandler;
     }
@@ -30,7 +30,7 @@ class ZeroMQSub implements Runnable {
         ZMQ.Context context = ZMQ.context(1);
         ZMQ.Socket socket = context.socket(ZMQ.SUB);
 
-        socket.connect(host+":"+port); //tcp://130.209.246.38:5556");
+        socket.connect(host+":"+port);
         socket.subscribe("".getBytes());
 
         Log.d("#DEBUG", "before while loop");
@@ -45,6 +45,8 @@ class ZeroMQSub implements Runnable {
             m.setData(b);
             uiThreadHandler.sendMessage(m);
         }
+
+        Log.d("#DEBUG", "Thread exciting");
 
         socket.close();
         context.term();

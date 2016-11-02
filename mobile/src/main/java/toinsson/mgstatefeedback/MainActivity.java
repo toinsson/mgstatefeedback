@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -47,21 +49,21 @@ public class MainActivity extends Activity implements
     private boolean mResolvingError = false;
 
     private View mStartActivityBtn;
-
     private TextView mTextView;
-
+    private TextView mIpText;
+    private Spinner mSpinner;
+    private boolean serverConnected;
+    private Thread serverThread;
 
     private void subMessageReceived(Bundle messageBundle) {
         String msg = messageBundle.getString("msg");
         Log.d(TAG, "subMessageReceived: "+msg);
-        Random r = new Random();
-        List myList = new ArrayList<>(Arrays.asList(Color.BLUE, Color.GREEN, Color.RED));
-        int index = r.nextInt(myList.size());
-        int color = (int)myList.get(index);
-        mTextView.setBackgroundColor(color);
 
-        // send the color change to the watch
-        new sendStateTask().execute();
+        mTextView.setText(msg);
+        //mTextView.setBackgroundColor(color); TODO
+
+        // propagate the msg to the watch
+        new sendStateTask().execute(msg);
     }
 
     private final MessageListenerHandler serverMessageHandler = new MessageListenerHandler(
@@ -76,10 +78,18 @@ public class MainActivity extends Activity implements
     private void setupViews() {
 
         mStartActivityBtn = findViewById(R.id.start_wearable_activity);
+        mTextView = (TextView) findViewById(R.id.statetextview);
+        mIpText = (TextView) findViewById(R.id.iptext);
 
-        mTextView = (TextView) findViewById(R.id.textview);
+        mSpinner = (Spinner) findViewById(R.id.spinner);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.ipaddress_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        mSpinner.setAdapter(adapter);
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,8 +103,8 @@ public class MainActivity extends Activity implements
                 .addOnConnectionFailedListener(this)
                 .build();
 
-        // create the SUB for state commands
-        new Thread(new ZeroMQSub(serverMessageHandler)).start();
+        serverConnected = false;
+        // the SUB need to be launched via connect button
     }
 
     @Override
@@ -166,6 +176,29 @@ public class MainActivity extends Activity implements
     }
 
 
+    public void onConnectClick(View view){
+
+        int viewId = view.getId();
+        String ip;
+        if (viewId == mIpText.getId()) {
+            ip = mIpText.getText().toString();
+        }
+        else {
+            ip = mSpinner.getSelectedItem().toString();
+        }
+
+
+        if (!serverConnected) {
+            serverThread = new Thread(new ZeroMQSub(serverMessageHandler, ip));
+            serverThread.start();
+        }
+        else {
+            serverThread.interrupt();
+            serverThread = new Thread(new ZeroMQSub(serverMessageHandler, ip));
+            serverThread.start();
+        }
+    }
+
     /**
      * Sends an RPC to start a fullscreen Activity on the wearable.
      */
@@ -216,20 +249,20 @@ public class MainActivity extends Activity implements
         );
     }
 
-    private class sendStateTask extends AsyncTask<Void, Void, Void> {
+    private class sendStateTask extends AsyncTask<String, Void, Void> {
 
         @Override
-        protected Void doInBackground(Void... args) {
+        protected Void doInBackground(String... msg) {
             Collection<String> nodes = getNodes();
             for (String node : nodes) {
-                sendStateMessage(node);
+                sendStateMessage(node, msg);
             }
             return null;
         }
     }
-    private void sendStateMessage(String node) {
+    private void sendStateMessage(String node, String... msg) {
         Wearable.MessageApi.sendMessage(
-                mGoogleApiClient, node, SEND_STATE_PATH, new byte[0]).setResultCallback(
+                mGoogleApiClient, node, SEND_STATE_PATH, msg[0].getBytes()).setResultCallback(
                 new ResultCallback<MessageApi.SendMessageResult>() {
                     @Override
                     public void onResult(MessageApi.SendMessageResult sendMessageResult) {

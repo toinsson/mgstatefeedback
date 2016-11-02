@@ -40,20 +40,29 @@ BoxLayout:
             orientation: 'vertical'
             TextInput:
                 id: textinput_1
-                text: 'red'
+                text: 'grasp'
             TextInput:
                 id: textinput_2
-                text: 'green'
+                text: 'release'
+            TextInput:
+                id: textinput_3
+                text: 'disabled'
 
         BoxLayout:
             orientation: 'vertical'
             CheckBox:
-                id: checkbox
+                id: checkbox_1
                 group: 'g'
                 active: True
 
             CheckBox:
+                id: checkbox_2
                 group: 'g'
+
+            CheckBox:
+                id: checkbox_3
+                group: 'g'
+
 '''
 
 import zmq
@@ -97,10 +106,12 @@ class TouchtracerApp(App):
         return Builder.load_string(kv)
 
     def send(self):
-        if self.root.ids['checkbox'].active:
+        if self.root.ids['checkbox_1'].active:
             strToSend = self.root.ids['textinput_1'].text
-        else:
+        elif self.root.ids['checkbox_2'].active:
             strToSend = self.root.ids['textinput_2'].text
+        else:
+            strToSend = self.root.ids['textinput_3'].text
 
         print strToSend
 
