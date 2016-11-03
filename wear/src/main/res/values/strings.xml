@@ -1,5 +1,4 @@
 <resources>
     <string name="app_name">mgstatefeedback</string>
-    <string name="sensor_1">BCI:</string>
-    <string name="sensor_2">Muscle:</string>
+    <string name="state">state:</string>
 </resources>
