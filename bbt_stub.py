@@ -100,7 +100,8 @@ class TouchtracerApp(App):
     port = StringProperty()
 
     def build(self):
-        self.ip = get_own_ip()
+        # self.ip = get_own_ip()
+        self.ip = 'own ip'
         self.port = '5556'
         self.pub = SimplePublisher(port = self.port)
         return Builder.load_string(kv)

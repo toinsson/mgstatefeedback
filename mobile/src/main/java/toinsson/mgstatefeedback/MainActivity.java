@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -54,6 +55,8 @@ public class MainActivity extends Activity implements
     private Spinner mSpinner;
     private boolean serverConnected;
     private Thread serverThread;
+    private Button mConnectButton;
+
 
     private void subMessageReceived(Bundle messageBundle) {
         String msg = messageBundle.getString("msg");
@@ -81,7 +84,9 @@ public class MainActivity extends Activity implements
         mTextView = (TextView) findViewById(R.id.statetextview);
         mIpText = (TextView) findViewById(R.id.iptext);
 
+        mConnectButton = (Button) findViewById(R.id.connectbutton);
         mSpinner = (Spinner) findViewById(R.id.spinner);
+
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.ipaddress_array, android.R.layout.simple_spinner_item);
@@ -178,15 +183,17 @@ public class MainActivity extends Activity implements
 
     public void onConnectClick(View view){
 
-        int viewId = view.getId();
-        String ip;
-        if (viewId == mIpText.getId()) {
+        Integer viewId = view.getId();
+        String ip = "ip_not_initialised";
+
+        Log.d(TAG, viewId +" "+ mConnectButton.getId());
+
+        if (viewId.equals(mConnectButton.getId())) {
             ip = mIpText.getText().toString();
         }
-        else {
+        else if (viewId.equals(mSpinner.getId())) {
             ip = mSpinner.getSelectedItem().toString();
         }
-
 
         if (!serverConnected) {
             serverThread = new Thread(new ZeroMQSub(serverMessageHandler, ip));
@@ -197,6 +204,8 @@ public class MainActivity extends Activity implements
             serverThread = new Thread(new ZeroMQSub(serverMessageHandler, ip));
             serverThread.start();
         }
+
+        serverConnected = true;
     }
 
     /**

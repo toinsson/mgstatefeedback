@@ -4,5 +4,6 @@
     <string-array name="ipaddress_array">
         <item>130.209.246.38</item>
         <item>10.0.2.2</item>
+        <item>10.42.0.1</item>
     </string-array>
 </resources>
