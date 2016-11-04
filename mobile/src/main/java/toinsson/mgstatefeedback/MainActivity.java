@@ -56,6 +56,7 @@ public class MainActivity extends Activity implements
     private boolean serverConnected;
     private Thread serverThread;
     private Button mConnectButton;
+    private Button mConnectButtonSpinner;
 
 
     private void subMessageReceived(Bundle messageBundle) {
@@ -85,6 +86,7 @@ public class MainActivity extends Activity implements
         mIpText = (TextView) findViewById(R.id.iptext);
 
         mConnectButton = (Button) findViewById(R.id.connectbutton);
+        mConnectButtonSpinner = (Button) findViewById(R.id.connectbuttonspinner);
         mSpinner = (Spinner) findViewById(R.id.spinner);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -187,11 +189,12 @@ public class MainActivity extends Activity implements
         String ip = "ip_not_initialised";
 
         Log.d(TAG, viewId +" "+ mConnectButton.getId());
+        Log.d(TAG, viewId +" "+ mSpinner.getId());
 
         if (viewId.equals(mConnectButton.getId())) {
             ip = mIpText.getText().toString();
         }
-        else if (viewId.equals(mSpinner.getId())) {
+        else if (viewId.equals(mConnectButtonSpinner.getId())) {
             ip = mSpinner.getSelectedItem().toString();
         }
 

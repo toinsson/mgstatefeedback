@@ -37,7 +37,7 @@ class ZeroMQSub implements Runnable {
 
         while(!Thread.currentThread().isInterrupted()) {
             String msg = socket.recvStr();
-
+            Log.d("#DEBUG", "msg: "+msg);
             // prepare the message back to UI
             Message m = uiThreadHandler.obtainMessage();
             Bundle b = new Bundle();
