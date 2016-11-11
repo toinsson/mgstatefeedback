@@ -7,6 +7,6 @@ which the app on the Android phone will subscribe to. Any update is then propaga
 
 The watch will display one of the three image below:
 
-![](image/tick.png)
-![](image/cross.png)
+![](image/hand_close.png)
+![](image/hand_open.png)
 ![](image/speak.png)

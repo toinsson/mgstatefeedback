@@ -52,17 +52,17 @@ public class MainActivity extends WearableActivity {
                 String s = intent.getStringExtra(DataLayerListenerService.SEND_STATE_DATA);
                 Log.d(TAG, "received broadcast from service " + s);
 
-                if (s.contains("grasp")) {
+                if (s.contains("watch_grasping")) {
                     Resources res = getResources();
-                    Drawable drawable = res.getDrawable(R.drawable.tick);
+                    Drawable drawable = res.getDrawable(R.drawable.hand_close);
                     mImageView.setBackground(drawable);
                 }
-                else if (s.contains("release")) {
+                else if (s.contains("watch_not_grasping")) {
                     Resources res = getResources();
-                    Drawable drawable = res.getDrawable(R.drawable.cross);
+                    Drawable drawable = res.getDrawable(R.drawable.hand_open);
                     mImageView.setBackground(drawable);
                 }
-                else if (s.contains("disabled")) {
+                else if (s.contains("watch_emergency")) {
                     Resources res = getResources();
                     Drawable drawable = res.getDrawable(R.drawable.speak);
                     mImageView.setBackground(drawable);

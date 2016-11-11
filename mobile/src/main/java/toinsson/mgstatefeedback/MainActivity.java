@@ -64,7 +64,6 @@ public class MainActivity extends Activity implements
         Log.d(TAG, "subMessageReceived: "+msg);
 
         mTextView.setText(msg);
-        //mTextView.setBackgroundColor(color); TODO
 
         // propagate the msg to the watch
         new sendStateTask().execute(msg);
